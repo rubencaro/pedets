@@ -1,8 +1,11 @@
+alias Pedets.Web.Router
+
 defmodule PedetsTest do
+  @moduledoc false
   use ExUnit.Case
   use Plug.Test
 
-  @opts Pedets.Web.Router.init([])
+  @opts Router.init([])
 
   test "greets the world" do
     assert Pedets.hello() == :world
@@ -13,7 +16,7 @@ defmodule PedetsTest do
     conn = conn(:get, "/hello")
 
     # Invoke the plug
-    conn = Pedets.Web.Router.call(conn, @opts)
+    conn = Router.call(conn, @opts)
 
     # Assert the response and status
     assert conn.state == :sent
@@ -26,7 +29,7 @@ defmodule PedetsTest do
     conn = conn(:get, "/metrics")
 
     # Invoke the plug
-    conn = Pedets.Web.Router.call(conn, @opts)
+    conn = Router.call(conn, @opts)
 
     # Assert the response and status
     assert conn.state == :sent
@@ -34,5 +37,21 @@ defmodule PedetsTest do
 
     # Assert contains at least 'http_requests_total' metric
     assert String.contains?(conn.resp_body, "http_requests_total")
+  end
+
+  test "responds 404 to not found" do
+    # Create a test connection
+    conn = conn(:get, "/any")
+
+    # Invoke the plug
+    conn = Router.call(conn, @opts)
+
+    # Assert the response and status
+    assert conn.state == :sent
+    assert conn.status == 404
+  end
+
+  test "start code does not crash" do
+    {:error, {:already_started, _pid}} = Pedets.Application.start(:normal, [])
   end
 end

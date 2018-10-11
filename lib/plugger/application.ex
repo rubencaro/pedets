@@ -1,17 +1,19 @@
+alias Pedets.Web.{MetricsExporter, MetricsInstrumenter, Router}
+alias Plug.Adapters.Cowboy2
+
 defmodule Pedets.Application do
   @moduledoc false
 
   use Application
 
   def start(_type, _args) do
-
-    Pedets.Web.MetricsExporter.setup()
-    Pedets.Web.MetricsInstrumenter.setup()
+    MetricsExporter.setup()
+    MetricsInstrumenter.setup()
 
     children = [
-      Plug.Adapters.Cowboy2.child_spec(
+      Cowboy2.child_spec(
         scheme: :http,
-        plug: Pedets.Web.Router,
+        plug: Router,
         options: [port: 4001]
       )
     ]
