@@ -83,4 +83,10 @@ defmodule PedetsTest do
     {:ok, _} = :ets.file2tab(path |> to_charlist(), verify: true)
     assert ^data = name |> :ets.lookup(:hey) |> hd()
   end
+
+  test "Dumper D struct has nice defaults" do
+    %Pedets.Dumper.D{}
+    |> Map.from_struct()
+    |> Enum.all?(fn {_, v} -> assert !is_nil(v) end)
+  end
 end
