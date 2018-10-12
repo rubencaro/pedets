@@ -1,4 +1,4 @@
-defmodule Pedets.ETSHolder do
+defmodule Pedets.Holder do
   @moduledoc false
   use GenServer
 

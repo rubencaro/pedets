@@ -25,3 +25,4 @@ pedets-*.tar
 # development crap
 .elixir_ls
 .vscode
+/tmp/

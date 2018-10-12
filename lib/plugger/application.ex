@@ -16,7 +16,7 @@ defmodule Pedets.Application do
         plug: Router,
         options: [port: 4001]
       ),
-      {Pedets.ETSHolder, :busytable}
+      {Pedets.Holder, :busytable}
     ]
 
     opts = [strategy: :one_for_one, name: Pedets.Supervisor]

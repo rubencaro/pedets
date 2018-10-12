@@ -1,5 +1,5 @@
 alias Pedets.Web.Router
-alias Pedets.ETSHolder
+alias Pedets.{Holder, Dumper}
 
 defmodule PedetsTest do
   @moduledoc false
@@ -7,6 +7,12 @@ defmodule PedetsTest do
   use Plug.Test
 
   @opts Router.init([])
+
+  setup_all do
+    File.rm_rf("tmp")
+    :ok = File.mkdir("tmp")
+    :ok
+  end
 
   test "greets the world" do
     assert Pedets.hello() == :world
@@ -56,7 +62,21 @@ defmodule PedetsTest do
     {:error, {:already_started, _pid}} = Pedets.Application.start(:normal, [])
   end
 
-  test "ETSHolder starts" do
-    {:ok, _} = ETSHolder.start_link(:any)
+  test "Holder starts" do
+    {:ok, _} = Holder.start_link(:any)
+  end
+
+  test "Dumper dumps a valid dump" do
+    name = System.system_time(:nanosecond) |> to_string() |> String.to_atom()
+    path = "tmp/dump_#{name |> to_string()}"
+    data = {:hey, :you}
+
+    {:ok, holder} = Holder.start_link(name)
+    assert :ets.insert(name, data)
+    :ok = Dumper.dump(name, path)
+    assert File.exists?(path)
+    :ok = GenServer.stop(holder)
+    {:ok, _} = :ets.file2tab(path |> to_charlist(), verify: true)
+    assert ^data = name |> :ets.lookup(:hey) |> hd()
   end
 end
