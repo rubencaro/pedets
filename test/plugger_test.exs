@@ -66,6 +66,10 @@ defmodule PedetsTest do
     {:ok, _} = Holder.start_link(:any)
   end
 
+  test "Dumper starts" do
+    {:ok, _} = Dumper.start_link(:any)
+  end
+
   test "Dumper dumps a valid dump" do
     name = System.system_time(:nanosecond) |> to_string() |> String.to_atom()
     path = "tmp/dump_#{name |> to_string()}"
