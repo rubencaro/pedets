@@ -1,5 +1,6 @@
 alias Pedets.Web.Router
 alias Pedets.{Holder, Dumper}
+alias Pedets.Mock.Dumper, as: M
 
 defmodule PedetsTest do
   @moduledoc false
@@ -67,7 +68,7 @@ defmodule PedetsTest do
   end
 
   test "Dumper starts" do
-    {:ok, _} = Dumper.start_link(:any)
+    {:ok, _} = Dumper.start_link([])
   end
 
   test "Dumper dumps a valid dump" do
@@ -88,5 +89,13 @@ defmodule PedetsTest do
     %Pedets.Dumper.D{}
     |> Map.from_struct()
     |> Enum.all?(fn {_, v} -> assert !is_nil(v) end)
+  end
+
+  test "Dumper honors given timeout" do
+    {:ok, mock} = M.spawn()
+    assert M.count(mock) == 0
+    {:ok, _} = Dumper.start_link(dump_fun: M.get(mock), timeout: 50)
+    Process.sleep(500)
+    assert M.count(mock) >= 9
   end
 end
