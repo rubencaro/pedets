@@ -1,4 +1,5 @@
 alias Pedets.Web.Router
+alias Pedets.ETSHolder
 
 defmodule PedetsTest do
   @moduledoc false
@@ -53,5 +54,9 @@ defmodule PedetsTest do
 
   test "start code does not crash" do
     {:error, {:already_started, _pid}} = Pedets.Application.start(:normal, [])
+  end
+
+  test "ETSHolder starts" do
+    {:ok, _} = ETSHolder.start_link(:any)
   end
 end
